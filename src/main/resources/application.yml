@@ -1,0 +1,26 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /redis-cache-example
+
+spring:
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1d
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      group:
+        liveness:
+          - redis
+        readiness:
+          - redis
