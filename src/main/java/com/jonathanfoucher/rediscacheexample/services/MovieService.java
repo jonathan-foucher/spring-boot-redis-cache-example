@@ -4,22 +4,22 @@ import com.jonathanfoucher.rediscacheexample.data.dto.MovieDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MovieService {
-    private final RedisCacheManager cacheManager;
+    private final CacheManager cacheManager;
     private final RedisTemplate<String, MovieDto> redisTemplate;
+    private final FakeService fakeService;
 
     private static final String MOVIE_CACHE_NAME = "movies";
     private static final String ALL_MOVIES_CACHE_NAME = "all_movies";
@@ -37,7 +37,7 @@ public class MovieService {
     public MovieDto findById(Long id) {
         clearFindAllMoviesCache();
         log.info("Get movie by id: {}", id);
-        return mockFindById(id);
+        return fakeService.findById(id);
     }
 
     @CachePut(value = MOVIE_CACHE_NAME, key = "#result.id")
@@ -67,14 +67,5 @@ public class MovieService {
         } else {
             log.error("Cache {} not found", ALL_MOVIES_CACHE_NAME);
         }
-    }
-
-    // simulate retrieving data
-    private MovieDto mockFindById(Long id) {
-        MovieDto movie = new MovieDto();
-        movie.setId(id);
-        movie.setTitle("Title");
-        movie.setReleaseDate(LocalDate.of(2020, 1, 1));
-        return movie;
     }
 }

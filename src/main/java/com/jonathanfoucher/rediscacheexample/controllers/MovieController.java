@@ -14,7 +14,7 @@ public class MovieController {
     private final MovieService movieService;
 
     @GetMapping
-    public List<MovieDto> findAll() {
+    public List<MovieDto> findAllCached() {
         return movieService.findAllCached();
     }
 
@@ -24,7 +24,7 @@ public class MovieController {
     }
 
     @PostMapping
-    public void saveAll(@RequestBody MovieDto movie) {
+    public void addMovieToCache(@RequestBody MovieDto movie) {
         movieService.addMovieToCache(movie);
     }
 
